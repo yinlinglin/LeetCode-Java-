@@ -1,0 +1,17 @@
+public class Solution {
+    public boolean subSum(TreeNode root,int sum,int subsum){
+        if(root.left==null&&root.right==null)
+        {
+            if(subsum+root.val==sum)return true;
+            else return false;
+        }
+        if(root.left!=null&&subSum(root.left,sum,subsum+root.val))return true;
+        if(root.right!=null&&subSum(root.right,sum,subsum+root.val))return true;
+        return false;
+    }
+    public boolean hasPathSum(TreeNode root, int sum) {
+        if(root==null)return false;
+        return subSum(root,sum,0);
+        
+        }
+}
