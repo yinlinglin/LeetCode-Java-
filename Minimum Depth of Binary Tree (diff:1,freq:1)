@@ -1,0 +1,10 @@
+public class Solution {
+    public int minDepth(TreeNode root) {
+        if(root==null) return 0;
+        int lnum = minDepth(root.left);
+        int rnum = minDepth(root.right);
+        if(lnum==0)return rnum+1;
+        if(rnum==0)return lnum+1;
+        return Math.min(lnum,rnum)+1;
+    }
+}
