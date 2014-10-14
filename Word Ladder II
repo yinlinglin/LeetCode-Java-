@@ -1,0 +1,77 @@
+public class Solution {
+	private class Node
+	{
+		int length;
+		String str;
+		Node(String s,int t)
+		{
+			str = s;
+			length = t;
+		}
+	}
+	void InitPreNode(String start,String end,HashSet<String>dict,Map<String, ArrayList<Node>> preNode)
+	{
+		dict.add(end);
+		Queue<Node> queue = new LinkedList<Node>();
+		queue.add(new Node(start,0));
+		int lastMaxStep = -1;
+		while(queue.isEmpty()==false)
+		{
+			Node nd = queue.poll();
+			if(nd.length>=lastMaxStep&&lastMaxStep!=-1)break;
+			for(int i = 0;i<nd.str.length();i++)
+			{
+				for(char t = 'a'; t<='z' ; t++)
+				{
+					StringBuilder sb = new StringBuilder(nd.str);
+					sb.setCharAt(i, t);
+					String s = sb.toString();
+					if(s.equals(nd.str))continue;
+					if(s.equals(start))continue;
+					if(s.equals(end)&&lastMaxStep==-1)lastMaxStep =nd.length+1;
+					if(dict.contains(s)==true)
+					{
+						ArrayList<Node> finds = preNode.get(s);
+						if(finds==null){
+							queue.add(new Node(s,nd.length+1));
+							ArrayList<Node> newPres = new ArrayList<Node>();
+							newPres.add(nd);
+							preNode.put(s, newPres);
+						}
+						else{
+							if(finds.get(0).length==nd.length)finds.add(nd);
+						}
+					}
+				}
+			}
+			
+		}
+		
+	}
+	void BackPath(String pre,String start,Map <String,ArrayList<Node>> preNode,ArrayList<String>path,ArrayList<ArrayList<String>> paths)
+	{
+		path.add(0,pre);
+		if(pre==start){ArrayList<String> p = new ArrayList<String>(path);  
+		paths.add(p);}
+		else{
+			ArrayList<Node> pres = preNode.get(pre);
+			if(pres!=null)
+			for(Node iter:pres){
+				BackPath(iter.str,start,preNode,path,paths);
+			}
+				
+			
+		}
+		path.remove(0);
+	}
+	public ArrayList<ArrayList<String>> findLadders(String start, String end, HashSet<String> dict) {
+		ArrayList<ArrayList<String>> paths = new ArrayList<ArrayList<String>>();  
+		if (start == null || end == null || start.length() == 0) return paths;  
+		Map <String,ArrayList<Node>> preNode = new HashMap <String,ArrayList<Node>>();
+		InitPreNode(start,end,dict,preNode);
+		ArrayList<String> pp = new ArrayList<String>();
+		BackPath(end,start,preNode,pp,paths);
+		return paths;
+	}
+}
+
